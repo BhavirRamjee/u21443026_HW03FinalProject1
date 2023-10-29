@@ -1,0 +1,69 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Book Type Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+
+    <div style="width: 50%;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <button id="exportChart">Export Chart</button>
+    <img id="exportedImage" style="display: none;">
+
+    <script>
+    var chartData = @Html.Raw(Json.Encode(Model)); // Model contains the chart data
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.Labels,
+            datasets: [{
+                label: 'Number of Books',
+                data: chartData.Values,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+        // Function to export the chart as an image
+        function exportChart() {
+            var canvas = document.getElementById('myChart');
+            var img = document.getElementById('exportedImage');
+            img.src = canvas.toDataURL('image/png');
+            img.style.display = 'block';
+
+            // Optionally, you can provide a download link for the user
+            var downloadLink = document.createElement('a');
+            downloadLink.href = img.src;
+            downloadLink.download = 'chart.png';
+            downloadLink.click();
+        }
+
+        // Attach the exportChart function to the button click event
+        document.getElementById('exportChart').addEventListener('click', exportChart);
+    </script>
+
+</body>
+</html>
+
+
